@@ -6,8 +6,7 @@ from reddit_credentials import client_id, client_secret, user_agent, username, p
 
 # Regex compile to extract the twitch links to watch the match.
 get = re.compile(r'\[[\w]+\]\(https:\/\/www.twitch.tv\/[\w]+\)')
-
-# make a redit instance
+# make a reddit instance
 
 
 def reddit_instance():
@@ -52,8 +51,7 @@ def look_for_submission(reddit, subreddit, posts_replied_to, users_list):
                     print(msg)
                     submission.reply('''I am a MatchReminder-Bot that reminds users when a DotA match is about to start. To get subscribed to the list of {} users, reply with "!addme" to this comment and you will be added to the list and reminded from the next post.
     For feedback, please PM me [here](https://www.reddit.com/message/compose/?to=matchreminder-bot).
-    Now go and enjoy watching some dotes.
-    '''.format(len(users_list)))
+    Now go and enjoy watching some dotes.'''.format(len(users_list)))
                     print('replied to the post : {}'.format(submission.id))
                     posted_id.append(submission.id)
                     print('I replied to {} posts so far.' .format(len(posted_id)))
