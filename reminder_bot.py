@@ -5,38 +5,11 @@ import os.path
 from reddit_credentials import client_id, client_secret, user_agent, username, password
 from data import *
 
-if not os.path.isfile("subscribers.txt"):
-    subscribers = []
-else:
-    # Read the file into a list and remove any empty values
-    with open("subscribers.txt", "r") as f:
-        subscribers = f.read()
-        subscribers = subscribers.split("\n")
-        subscribers = list(filter(None, subscribers))
-
-if not os.path.isfile("posted_id.txt"):
-    posted_id = []
-else:
-    # Read the file into a list and remove any empty values
-    with open("posted_id.txt", "r") as f:
-        posted_id = f.read()
-        posted_id = posted_id.split("\n")
-        posted_id = list(filter(None, posted_id))
-
-if not os.path.isfile("commented.txt"):
-    commented = []
-else:
-    # Read the file into a list and remove any empty values
-    with open("commented.txt", "r") as f:
-        commented = f.read()
-        commented = commented.split("\n")
-        commented = list(filter(None, commented))
 
 # Regex compile to extract the twitch links to watch the match.
 get = re.compile(r'\[[\w]+\]\(https:\/\/www.twitch.tv\/[\w]+\)')
 
-
-def send_message(reddit, message_subject, message_body):
+def send_message(reddit, message_subject, message_body, subscribers):
     # Sends the messages to the subscribed users
     for user in subscribers:
         try:
@@ -48,7 +21,6 @@ def send_message(reddit, message_subject, message_body):
 
 
 # make a reddit instance
-
 def reddit_instance():
     reddit = praw.Reddit(client_secret=client_secret,
                          client_id=client_id,
@@ -66,10 +38,13 @@ def update_posted(post_id):
         print('New submission with id {} has been added' .format(post_id))
 
 
-def look_for_submission(reddit, subreddit, posted_id):
+def look_for_submission(reddit, subreddit):
     # get the latest sumissions from the subreddit
     for submission in subreddit.stream.submissions():
-        if submission.created > time.time():
+        posted_id = getPostedIDsList()[:]
+        subscribers = getSubscribersList()[:]
+        commented = getCommentedList()[:]
+        if submission.created_utc > startTime:
             if submission.author == 'MatchReminder-Bot':  # check if the author is the one we want.
                 if submission.id not in posted_id:
                     temp = []
@@ -98,7 +73,7 @@ def look_for_submission(reddit, subreddit, posted_id):
                     posted_id.append(submission.id)
                     print('I replied to {} posts so far.' .format(len(posted_id)))
                     update_posted(submission.id)
-                    send_message(reddit, submission.title, msg)
+                    send_message(reddit, submission.title, msg, subscribers)
                     print("I'm done posting and asking for new users to subscribe, time to sleep!!!!!")
                     time.sleep(60)
             else:
@@ -106,12 +81,13 @@ def look_for_submission(reddit, subreddit, posted_id):
                 pass
 
 
+startTime = time.time()
 def main():
     reddit = reddit_instance()
     print('Reddit instance created with this user: {}'.format(reddit.user.me()))
     # our subreddit is DotA2 pythonforengineers
     subreddit = reddit.subreddit('pythonforengineers')
-    look_for_submission(reddit, subreddit, posted_id)
+    look_for_submission(reddit, subreddit)
 
 
 if __name__ == '__main__':

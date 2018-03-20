@@ -3,42 +3,11 @@ import re
 import time
 import os.path
 from reddit_credentials import client_id, client_secret, user_agent, username, password
-
+from data import *
 
 ##TODOs
 #1.  Change print to a function where it would write to a file
 #2.  
-
-
-
-if not os.path.isfile("subscribers.txt"):
-    subscribers = []
-else:
-    # Read the file into a list and remove any empty values
-    with open("subscribers.txt", "r") as f:
-        subscribers = f.read()
-        subscribers = subscribers.split("\n")
-        subscribers = list(filter(None, subscribers))
-
-if not os.path.isfile("posted_id.txt"):
-    posted_id = []
-else:
-    # Read the file into a list and remove any empty values
-    with open("posted_id.txt", "r") as f:
-        posted_id = f.read()
-        posted_id = posted_id.split("\n")
-        posted_id = list(filter(None, posted_id))
-
-if not os.path.isfile("commented.txt"):
-    commented = []
-else:
-    # Read the file into a list and remove any empty values
-    with open("commented.txt", "r") as f:
-        commented = f.read()
-        commented = commented.split("\n")
-        commented = list(filter(None, commented))
-
-# make a reddit instance
 
 
 def reddit_instance():
@@ -50,7 +19,6 @@ def reddit_instance():
     return reddit
 
 # update the posted text file with the lastest submission id
-
 
 def update_comments(comment_id):
     with open("commented.txt", "a") as f:
@@ -64,9 +32,11 @@ def update_subs(comment_author):
         print('New redditor {} has been added to the list' .format(str(comment_author)))
 
 
-def look_for_subscribers(reddit, subreddit, posted_id):
+def look_for_subscribers(reddit):
+    posted_id = list(getPostedIDsList())
+    subscribers = getSubscribersList()[:]
+    commented = getCommentedList()[:]
     for post in posted_id:
-        print(commented)
         print('looking for this post' + post)
         parent = None
         submission = reddit.submission(post)
@@ -76,9 +46,6 @@ def look_for_subscribers(reddit, subreddit, posted_id):
                 print('parent before me')
                 parent = str(comment.id)
                 print('Im the original parent', parent)
-                # print(commented)
-            # if comment.parent == parent:
-            #     print('parent is working')
             if comment.body.lower() == '!addme' and str(comment.parent()) == parent and comment.id not in commented:
                 print('stage3')
                 if comment.author not in subscribers:
@@ -94,16 +61,14 @@ def look_for_subscribers(reddit, subreddit, posted_id):
                     comment.reply('You are already in the Subscribers list!')
                     print('user {} already in the subscribers list'.format(comment.author))
                     commented.append(comment.id)
+                    update_comments(comment.id)
     time.sleep(10)
 
 
 def main():
     reddit = reddit_instance()
     print('Reddit instance created with this user: {}'.format(reddit.user.me()))
-
-    # our subreddit is DotA2 pythonforengineers
-    subreddit = reddit.subreddit('pythonforengineers')
-    look_for_subscribers(reddit, subreddit, posted_id)
+    look_for_subscribers(reddit)
     time.sleep(30)
 
 
