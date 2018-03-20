@@ -5,6 +5,12 @@ import os.path
 from reddit_credentials import client_id, client_secret, user_agent, username, password
 
 
+##TODOs
+#1.  Change print to a function where it would write to a file
+#2.  
+
+
+
 if not os.path.isfile("subscribers.txt"):
     subscribers = []
 else:
@@ -60,7 +66,8 @@ def update_subs(comment_author):
 
 def look_for_subscribers(reddit, subreddit, posted_id):
     for post in posted_id:
-        print('looking for this post')
+        print(commented)
+        print('looking for this post' + post)
         parent = None
         submission = reddit.submission(post)
         for comment in submission.comments.list():
@@ -77,13 +84,16 @@ def look_for_subscribers(reddit, subreddit, posted_id):
                 if comment.author not in subscribers:
                     print('stage4')
                     update_subs(comment.author)
+                    subscribers.append(comment.author)
                     comment.reply('Added!')
                     print('stage5')
                     update_comments(comment.id)
+                    commented.append(comment.id)
                     print('New user {} added to the subscribers list'.format(comment.author))
                 else:
                     comment.reply('You are already in the Subscribers list!')
                     print('user {} already in the subscribers list'.format(comment.author))
+                    commented.append(comment.id)
     time.sleep(10)
 
 

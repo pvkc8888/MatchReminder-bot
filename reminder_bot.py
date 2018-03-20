@@ -3,6 +3,7 @@ import re
 import time
 import os.path
 from reddit_credentials import client_id, client_secret, user_agent, username, password
+from data import *
 
 if not os.path.isfile("subscribers.txt"):
     subscribers = []
@@ -39,7 +40,7 @@ def send_message(reddit, message_subject, message_body):
     # Sends the messages to the subscribed users
     for user in subscribers:
         try:
-            final_body = 'Hey, u/{}. The wait is over.'.format(line) + message_body
+            final_body = 'Hey, u/{}. The wait is over. '.format(user) + message_body
             reddit.redditor(user).message(message_subject, final_body)
         except Exception as e:
             print('System warning - ' + str(e))
@@ -119,4 +120,4 @@ if __name__ == '__main__':
             main()
         except Exception as e:
             print('Main not working because of ' + str(e))
-            time.sleep(30)
+        time.sleep(30)
