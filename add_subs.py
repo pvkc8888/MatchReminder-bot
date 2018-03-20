@@ -5,9 +5,7 @@ import os.path
 from reddit_credentials import client_id, client_secret, user_agent, username, password
 from data import *
 
-##TODOs
-#1.  Change print to a function where it would write to a file
-#2.  
+# creating a reddit instance
 
 
 def reddit_instance():
@@ -18,12 +16,15 @@ def reddit_instance():
                          user_agent=user_agent)
     return reddit
 
-# update the posted text file with the lastest submission id
+# update the commented text file with the lastest comment id
+
 
 def update_comments(comment_id):
     with open("commented.txt", "a") as f:
         f.write(str(comment_id) + "\n")
         print('New comment_id {} has been added to the list' .format(str(comment_id)))
+
+# update the subscribers text file with new subs.
 
 
 def update_subs(comment_author):
@@ -31,33 +32,40 @@ def update_subs(comment_author):
         f.write(str(comment_author) + "\n")
         print('New redditor {} has been added to the list' .format(str(comment_author)))
 
+# go through all the posts that I made and find any new subscribers.
+
 
 def look_for_subscribers(reddit):
+    # get the lastes lists from the data.py file
+
     posted_id = list(getPostedIDsList())
     subscribers = getSubscribersList()[:]
     commented = getCommentedList()[:]
+    # get each submission from the posted_id list
     for post in posted_id:
         print('looking for this post' + post)
         parent = None
         submission = reddit.submission(post)
+        # go through each comment in that submission
         for comment in submission.comments.list():
-            print(str(comment.parent()), parent)
+            # check if its our parent post
             if comment.author == 'MatchReminder-bot' and str(comment.parent()) == post:
-                print('parent before me')
                 parent = str(comment.id)
-                print('Im the original parent', parent)
+                print('Im the original parent: ', parent)
+            # check for all comments that are children to our comment and have !addme
+            # in their body and are not already in the commented list
             if comment.body.lower() == '!addme' and str(comment.parent()) == parent and comment.id not in commented:
-                print('stage3')
+                # if the author is not in subs list, we have to add him
                 if comment.author not in subscribers:
-                    print('stage4')
                     update_subs(comment.author)
                     subscribers.append(comment.author)
+                    # tell him that he's added
                     comment.reply('Added!')
-                    print('stage5')
                     update_comments(comment.id)
                     commented.append(comment.id)
                     print('New user {} added to the subscribers list'.format(comment.author))
                 else:
+                    # if the user is already in the list, tell him that!
                     comment.reply('You are already in the Subscribers list!')
                     print('user {} already in the subscribers list'.format(comment.author))
                     commented.append(comment.id)
