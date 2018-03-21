@@ -1,0 +1,41 @@
+MatchReminder-Bot:
+✔ A reddit bot that tracks a submission from D2TournamentThreads and private messages the subscribers when a new post is up indicating that a match is about to start! @created(21-03-18 10:50)
+ @done (21-03-18 10:50)
+ Feels pretty good when you know you made something cool for the online community and people are actually using it.
+ Bugs:
+   ☐ Didnt reply to the following comments even though they were having the required format.
+   https://www.reddit.com/r/DotA2/comments/862b64/dreamleague_season_9_quarterfinal_4_team_secret/dw1szly/
+   https://www.reddit.com/r/DotA2/comments/862b64/dreamleague_season_9_quarterfinal_4_team_secret/dw1ryok/
+   https://www.reddit.com/r/DotA2/comments/861irw/dreamleague_season_9_quarterfinal_3_newbee_vs/dw1mwzb/
+   https://www.reddit.com/r/DotA2/comments/85zr0l/dreamleague_season_9_day_1_match_discussions/dw1g95r/
+   https://www.reddit.com/r/DotA2/comments/85zr0l/dreamleague_season_9_day_1_match_discussions/dw1fcl9/
+   https://www.reddit.com/r/DotA2/comments/85zr0l/dreamleague_season_9_day_1_match_discussions/dw1ed6l/
+   https://www.reddit.com/r/DotA2/comments/85zmx6/march_21_competitive_matches_china/dw1d8n9/
+
+   ☐ Replied to comments that aren't !addme
+   https://www.reddit.com/r/DotA2/comments/85zr0l/dreamleague_season_9_day_1_match_discussions/dw1bn8x/
+
+   ☐ Relied already in list when its the first time they are subscribing
+   https://www.reddit.com/r/DotA2/comments/85zr0l/dreamleague_season_9_day_1_match_discussions/dw1bn1t/
+   https://www.reddit.com/r/DotA2/comments/85zmx6/march_21_competitive_matches_china/dw1bgfq/
+
+Enhancements:
+  ☐ PMing the bot should be able to add them to the list. @created(21-03-18 11:24)
+  I think this is easy to check pms and check for the body of the message and compare it with the trigger word and add the users to the list.
+
+  ☐ yeah stdout wont do much good, we have to add print comments to log file @created(21-03-18 11:26)
+  when we just print the comment out, we cant access it later, but if we write it out to a log file, we can check it whenever we want.
+
+  ☐ Option to Unsubscribe @created(21-03-18 11:27)
+  right now we dont have the option for the user to unsubscribe, so maybe we can ask them to send a pm to the bot and unsubscribe them.
+
+
+ Future Work:
+   ☐ Other gaming subreddits?
+   have to check out the feasability option of implementing it on other gaming/other? subreddits.
+
+   ☐ Database for better file handling?
+   If we catch more wind, maybe we can try changing the database from text files to an actual database for better functionality.
+
+
+
